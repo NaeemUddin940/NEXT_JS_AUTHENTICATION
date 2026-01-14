@@ -28,6 +28,9 @@ export default function Navigation() {
             <Link href="/user/profile">Profile</Link>
           </li>
         )}
+        <li>
+          <Link href="/login">Login</Link>
+        </li>
       </ul>
     </div>
   );
