@@ -1,20 +1,20 @@
 // app/(public)/login/page.tsx
 "use client";
 
-import { handleRegister } from "@/actions/register";
-import InputField from "@/components/InputField";
+import { authenticate } from "@/actions/register";
+import InputField from "@/components/common/InputField";
 import { ThemeToggle } from "@/components/ui/toggle-theme";
 
 import { useActionState } from "react";
 
 export default function RegisterPage() {
-  const [state, formAction, isPending] = useActionState(handleRegister, {
+  const [state, formAction, isPending] = useActionState(authenticate, {
     success: false,
     errors: {},
     message: "",
     fields: {}, // Server theke asha typed data
   });
-
+  console.log(state.errors);
   return (
     <div className="max-w-md mx-auto mt-10 p-8 border rounded-xl shadow-sm bg-background">
       <h1 className="text-2xl font-bold mb-6 text-center">Create Account</h1>
@@ -23,9 +23,8 @@ export default function RegisterPage() {
         <InputField
           label="Full Name"
           name="name"
-
           placeholder="John Doe"
-          errors={state.errors}
+          errors={state.errors?.name}
           defaultValue={state.fields?.name} // Value persistence
         />
 
@@ -34,7 +33,7 @@ export default function RegisterPage() {
           name="email"
           type="email"
           placeholder="john@example.com"
-          errors={state.errors}
+          errors={state.errors?.email}
           defaultValue={state.fields?.email}
         />
 
