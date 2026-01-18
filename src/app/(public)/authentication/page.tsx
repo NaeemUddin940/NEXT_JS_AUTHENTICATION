@@ -1,6 +1,8 @@
 // // app/(public)/login/page.tsx
 // "use client";
 
+import { Authentication } from "@/components/Authentication";
+
 // import { authenticate } from "@/actions/register";
 // import InputField from "@/components/common/InputField";
 // import { ThemeToggle } from "@/components/ui/toggle-theme";
@@ -66,5 +68,9 @@
 // }
 
 export default function page() {
-  return <div>Login</div>;
+  return (
+    <div>
+      <Authentication />
+    </div>
+  );
 }

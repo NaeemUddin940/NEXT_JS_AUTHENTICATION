@@ -1,5 +1,3 @@
-import AuthPage from "@/components/authentication";
-
 export default function page() {
   return (
     <div className="h-120">
@@ -9,7 +7,6 @@ export default function page() {
       <div className="flex items-center justify-center h-110">
         <div>Home Page content</div>
       </div>
-      <AuthPage />
     </div>
   );
 }

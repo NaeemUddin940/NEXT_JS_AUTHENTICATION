@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { authenticate } from "@/actions/authentication";
+import { handleSocialLogin } from "@/actions/client/social-login";
+import { authenticate } from "@/actions/server/authentication";
 import { Lock, Mail, Phone, User } from "lucide-react";
 import Image from "next/image";
 import { useActionState, useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import InputField from "./common/InputField";
 import { OTPInput } from "./common/OTPinput";
 import { Button } from "./ui/button";
 
-const AuthPage = () => {
+export const Authentication = () => {
   const [state, formAction, isPending] = useActionState(authenticate, {
     success: false,
     errors: {},
@@ -241,8 +242,7 @@ const AuthPage = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <Button
-                  // যদি গুগল লোড হয় তবেই লোডার দেখাবে
-
+                  onClick={() => handleSocialLogin("google")}
                   image={{
                     src: "https://www.svgrepo.com/show/475656/google-color.svg",
                     alt: "Google",
@@ -252,20 +252,11 @@ const AuthPage = () => {
                 </Button>
 
                 <Button
-                  // যদি ফেসবুক লোড হয় তবেই লোডার দেখাবে
-                  //   isLoading={loadingProvider === "facebook"}
+                  onClick={() => handleSocialLogin("facebook")}
                   image={{
                     src: "https://www.svgrepo.com/show/475647/facebook-color.svg",
                     alt: "Facebook",
                   }}
-                  //   onClick={async () => {
-                  //     setLoadingProvider("facebook"); // ফেসবুকের জন্য লোডিং শুরু
-                  //     try {
-                  //       await handleSocialLogin("facebook");
-                  //     } finally {
-                  //       setLoadingProvider(null); // কাজ শেষ হলে রিসেট
-                  //     }
-                  //   }}
                 >
                   Facebook
                 </Button>
@@ -289,5 +280,3 @@ const AuthPage = () => {
     </div>
   );
 };
-
-export default AuthPage;
