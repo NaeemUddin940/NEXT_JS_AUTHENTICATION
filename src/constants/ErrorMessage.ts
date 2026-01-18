@@ -1,4 +1,4 @@
-export const authError = {
+export const AuthError = {
   /* ------------------------- 1. Name Validation ------------------------- */
   nameRequired: {
     success: false,
@@ -152,8 +152,4 @@ export const authError = {
     message: "⚙️ Something went wrong on our end. Please try again later.",
     status: 500,
   },
-};
-
-export const ERROR = {
-  ...authError,
 };

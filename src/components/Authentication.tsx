@@ -3,9 +3,11 @@
 
 import { handleSocialLogin } from "@/actions/client/social-login";
 import { authenticate } from "@/actions/server/authentication";
+import { AuthSuccess } from "@/constants/SuccessMessage";
 import { Lock, Mail, Phone, User } from "lucide-react";
 import Image from "next/image";
 import { useActionState, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import InputField from "./common/InputField";
 import { OTPInput } from "./common/OTPinput";
 import { Button } from "./ui/button";
@@ -36,13 +38,19 @@ export const Authentication = () => {
 
   // AuthPage component er bhetor code-ti add korun
   useEffect(() => {
-    if (state.success && state.message === "OTP_SENT") {
+    if (
+      state.success &&
+      state.message === AuthSuccess.registerdAndOtpSent.message
+    ) {
       setIsOtpSent(true);
     }
 
     if (state.success && state.message === "REGISTRATION_COMPLETE") {
       // Registration hoye gele user ke redirect korte paren ba success message dekhate paren
       console.log("object");
+    }
+    if (state.message) {
+      toast.success(state.message);
     }
   }, [state]);
 

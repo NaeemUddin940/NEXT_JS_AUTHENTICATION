@@ -7,6 +7,10 @@ export const auth = betterAuth({
   // ১. ডেটাবেস কানেকশন: আপনার তৈরি করা MongoDB কানেকশনটি এখানে ব্যবহার করা হচ্ছে।
   database: mongodbAdapter(db),
 
+  emailAndPassword: {
+    enabled: true,
+  },
+
   session: {
     // ২. সেশন সেটিংস:
     expiresIn: 10, // এটি সেকেন্ড হিসেবে ধরা হয় (এখানে ১০ সেকেন্ড দেওয়া আছে, যা খুব কম। সাধারণত ৭ দিন হলে সেটা অনেক বড় সংখ্যা হয়)।
