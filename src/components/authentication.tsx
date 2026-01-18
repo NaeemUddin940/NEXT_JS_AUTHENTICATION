@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { authenticate } from "@/actions/register";
+import { authenticate } from "@/actions/authentication";
 import { Lock, Mail, Phone, User } from "lucide-react";
 import Image from "next/image";
 import { useActionState, useEffect, useState } from "react";
@@ -104,6 +104,7 @@ const AuthPage = () => {
           <form className="space-y-4" action={formAction}>
             <input type="hidden" name="authMethod" value={authMethod} />
             <input type="hidden" name="isLogin" value={String(isLogin)} />
+            <input type="hidden" name="isOtpSent" value={String(isOtpSent)} />
             {!isOtpSent ? (
               <>
                 {authMethod === "email" ? (
