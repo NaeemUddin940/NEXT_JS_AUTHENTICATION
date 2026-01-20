@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import { env } from "./env";
 
 // ১. চেক করা হচ্ছে .env ফাইলে MongoDB কানেকশন স্ট্রিং (URI) আছে কি না। না থাকলে এরর দেখাবে।
@@ -14,3 +15,20 @@ const db = client.db(); // আপনি চাইলে ব্র্যাকে
 
 // ৪. client এবং db কে এক্সপোর্ট করা হচ্ছে যাতে অন্য ফাইল থেকে এগুলো ব্যবহার করে ডেটাবেসে কাজ করা যায়।
 export { client, db };
+
+export const User = db.collection("user");
+export const Session = db.collection("session");
+export const Account = db.collection("account");
+
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+
+  try {
+    await mongoose.connect(env.MONGODB_URI);
+    console.log("MongoDB Connected");
+  } catch (error) {
+    console.error("MongoDB Connection Error:", error);
+  }
+};
+
+export default connectDB;

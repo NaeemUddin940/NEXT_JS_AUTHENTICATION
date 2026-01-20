@@ -14,7 +14,7 @@ export default function Navigation() {
         </li>
 
         <li>
-          <Link href="/login">Login</Link>
+          <Link href="/authentication">Authentication</Link>
         </li>
       </ul>
     </div>

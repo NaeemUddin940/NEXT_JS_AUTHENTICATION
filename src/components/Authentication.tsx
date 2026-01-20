@@ -3,6 +3,7 @@
 
 import { handleSocialLogin } from "@/actions/client/social-login";
 import { authenticate } from "@/actions/server/authentication";
+import { resendOtp } from "@/actions/server/resend-otp";
 import { AuthSuccess } from "@/constants/SuccessMessage";
 import { Lock, Mail, Phone, User } from "lucide-react";
 import Image from "next/image";
@@ -13,18 +14,18 @@ import { OTPInput } from "./common/OTPinput";
 import { Button } from "./ui/button";
 
 export const Authentication = () => {
+  const [isLogin, setIsLogin] = useState(false);
+  const [authMethod, setAuthMethod] = useState("email"); // 'email' or 'phone'
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  // const [email, setEmail] = useState("");
+
   const [state, formAction, isPending] = useActionState(authenticate, {
     success: false,
+    extra: {},
     errors: {},
     message: "",
     fields: {}, // Server theke asha typed data
   });
-
-  const [myOtp, setMyOtp] = useState("");
-
-  const [isLogin, setIsLogin] = useState(false);
-  const [authMethod, setAuthMethod] = useState("email"); // 'email' or 'phone'
-  const [isOtpSent, setIsOtpSent] = useState(false);
 
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
@@ -38,21 +39,52 @@ export const Authentication = () => {
 
   // AuthPage component er bhetor code-ti add korun
   useEffect(() => {
-    if (
-      state.success &&
-      state.message === AuthSuccess.registerdAndOtpSent.message
-    ) {
-      setIsOtpSent(true);
+    // ১. চেক করুন state.fields.email আছে কি না, না থাকলে সেভ করবেন না
+    if (state?.fields?.email) {
+      localStorage.setItem("email", state.fields.email);
     }
 
-    if (state.success && state.message === "REGISTRATION_COMPLETE") {
-      // Registration hoye gele user ke redirect korte paren ba success message dekhate paren
-      console.log("object");
+    if (!state || !state.message) return;
+
+    if (state?.success) {
+      toast.success(state?.message);
+      setIsOtpSent(true);
+    } else {
+      toast.error(state?.message);
+      // এরর হলেও যদি রেজিস্ট্রেশন ডেটা থাকে, তা হিডেন ফিল্ডে ধরে রাখতে হবে
     }
-    if (state.message) {
-      toast.success(state.message);
+
+    // রেজিস্ট্রেশন সফল হলে লগইন মোডে নিয়ে যাওয়া
+    if (state?.message === AuthSuccess.Registerd_Success.message) {
+      setIsLogin(true);
+      setIsOtpSent(false);
     }
   }, [state]);
+
+  // ফ্রন্টএন্ড
+  console.log(state?.fields?.email);
+
+  const handleResend = async () => {
+    const email = localStorage.getItem("email");
+    // ১. ফাংশনের ভেতরে ইমেইলটি ধরুন
+
+    if (!email) {
+      toast.error("Email not found. Please try signing up again.");
+      return;
+    }
+
+    // ২. সার্ভার অ্যাকশন কল করুন
+    // আপনার অ্যাকশন যদি অবজেক্ট আশা করে { email: ... } তবে সেভাবে পাঠান
+    const res = await resendOtp({ email });
+
+    if (res.success) {
+      toast.success(res.message);
+      return;
+    } else {
+      toast.error(res.message || "Something went wrong");
+      return;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background gap-20 text-foreground flex items-center justify-center p-4 antialiased transition-colors duration-300">
@@ -114,106 +146,124 @@ export const Authentication = () => {
             <input type="hidden" name="authMethod" value={authMethod} />
             <input type="hidden" name="isLogin" value={String(isLogin)} />
             <input type="hidden" name="isOtpSent" value={String(isOtpSent)} />
-            {!isOtpSent ? (
+            {isOtpSent && (
               <>
-                {authMethod === "email" ? (
-                  <>
-                    {!isLogin && (
-                      <div className="space-y-1.5">
-                        <InputField
-                          label="Full Name"
-                          name="fullName"
-                          type="text"
-                          icon={<User size={20} />}
-                          placeholder="MD. Naeem Uddin"
-                          error={state.errors?.fullName}
-                          defaultValue={state.fields?.fullName}
-                        />
-                      </div>
-                    )}
+                <input
+                  type="hidden"
+                  name="email"
+                  value={state.fields?.email || ""}
+                />
+                <input
+                  type="hidden"
+                  name="fullName"
+                  value={state.fields?.fullName || ""}
+                />
+                <input
+                  type="hidden"
+                  name="password"
+                  value={state.fields?.password || ""}
+                />
+              </>
+            )}
+
+            <div className={isOtpSent ? "hidden" : "block space-y-2"}>
+              {authMethod === "email" ? (
+                <>
+                  {!isLogin && (
                     <div className="space-y-1.5">
                       <InputField
-                        label="Email Address"
-                        name="email"
-                        icon={<Mail size={20} />}
-                        type="email"
-                        placeholder="name@example.com"
-                        error={state.errors?.email}
-                        defaultValue={state.fields?.email}
+                        label="Full Name"
+                        name="fullName"
+                        type="text"
+                        icon={<User size={20} />}
+                        placeholder="MD. Naeem Uddin"
+                        error={state.errors?.fullName}
+                        defaultValue={state?.fields?.fullName}
                       />
                     </div>
-                  </>
-                ) : (
+                  )}
                   <div className="space-y-1.5">
                     <InputField
-                      label="Phone Number"
-                      name="phone"
-                      icon={<Phone size={20} />}
-                      type="tel"
-                      placeholder="+880 100-0000-000"
-                      error={state.errors?.phone}
-                      defaultValue={state.fields?.phone}
+                      label="Email Address"
+                      name="email"
+                      icon={<Mail size={20} />}
+                      type="email"
+                      placeholder="name@example.com"
+                      error={state.errors?.email}
+                      defaultValue={state?.fields?.email}
                     />
                   </div>
-                )}
+                </>
+              ) : (
                 <div className="space-y-1.5">
                   <InputField
-                    label="Password"
-                    name="password"
-                    icon={<Lock size={20} />}
-                    type="password"
-                    placeholder="••••••••"
-                    error={state.errors?.password}
+                    label="Phone Number"
+                    name="phone"
+                    icon={<Phone size={20} />}
+                    type="tel"
+                    placeholder="+880 100-0000-000"
+                    error={state.errors?.phone}
+                    defaultValue={state?.fields?.phone}
                   />
                 </div>
+              )}
+              <div className="space-y-1.5">
+                <InputField
+                  label="Password"
+                  name="password"
+                  icon={<Lock size={20} />}
+                  type="password"
+                  placeholder="••••••••"
+                  error={state?.errors?.password}
+                />
+              </div>
 
-                <Button
-                  variant="soft"
-                  type="submit"
-                  isLoading={isPending}
-                  className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-lg transition-colors mt-2 shadow-lg shadow-primary/20"
-                >
-                  {isLogin
-                    ? "Sign In"
-                    : authMethod === "email"
-                      ? "Verify & Register"
-                      : "Register Now"}
-                </Button>
-              </>
-            ) : (
-              /* OTP Verification View (Sudhu Email Registration-er jonno) */
+              <Button
+                variant="soft"
+                type="submit"
+                isLoading={isPending}
+                className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-lg transition-colors mt-2 shadow-lg shadow-primary/20"
+              >
+                {isLogin
+                  ? "Sign In"
+                  : authMethod === "email"
+                    ? "Verify & Register"
+                    : "Register Now"}
+              </Button>
+            </div>
+
+            {isOtpSent && (
               <div className="space-y-4">
+                <p className="text-sm tracking-tighter text-amber-500">
+                  To secure your account, please enter the code sent to your
+                  inbox.
+                  <span className="block font-medium text-destructive mt-1">
+                    Do not close this window.
+                  </span>
+                </p>
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium flex justify-between">
-                    Email OTP Code
-                    <button
-                      onClick={() => setIsOtpSent(false)}
-                      className="text-xs cursor-pointer text-primary hover:underline"
-                    >
-                      Edit Email
-                    </button>
-                  </label>
                   <OTPInput
                     name="otp"
-                    value={myOtp}
-                    onChange={(val) => setMyOtp(val)}
+                    error={state.errors?.otp}
+                    onEditEmail={() => setIsOtpSent(false)}
                   />
                 </div>
-                <button
-                  // onClick={submitOTP}
-                  type="submit"
+                <Button
+                  isLoading={isPending}
+                  type={"submit"}
                   className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-lg transition-colors shadow-lg shadow-primary/20"
                 >
                   Complete Registration
-                </button>
-                <p className="text-center text-xs text-muted">
+                </Button>
+                <div className="text-center text-xs text-muted">
                   Didn&apos;t receive code?{" "}
                   <button
                     type="button"
+                    onClick={handleResend}
                     className="text-primary cursor-pointer  hover:underline"
                   >
-                    {/* <span className="flex">
-                      {otpVerify.isPending ? (
+                    <span className="flex">
+                      {state.extra?.sentOtp && isPending ? (
                         <span className="flex items-center">
                           Resending
                           <span className="flex ml-0.5">
@@ -231,10 +281,9 @@ export const Authentication = () => {
                       ) : (
                         "Resend"
                       )}
-                    </span> */}
-                    Resend
+                    </span>
                   </button>
-                </p>
+                </div>
               </div>
             )}
           </form>

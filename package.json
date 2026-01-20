@@ -12,6 +12,7 @@
     "better-auth": "^1.4.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.27.1",
     "lucide-react": "^0.562.0",
     "mongodb": "^7.0.0",
     "mongoose": "^9.1.3",
@@ -21,6 +22,7 @@
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0",
     "server-only": "^0.0.1",
+    "sweetalert2": "^11.26.17",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.5"
   },

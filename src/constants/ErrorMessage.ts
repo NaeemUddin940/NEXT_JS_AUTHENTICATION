@@ -1,16 +1,7 @@
 export const AuthError = {
   /* ------------------------- 1. Name Validation ------------------------- */
-  nameRequired: {
-    success: false,
-    message: "👤 Name is required.",
-    status: 400,
-  },
-  nameLength: {
-    success: false,
-    message: "📏 Name must be at least 2 characters long.",
-    status: 400,
-  },
-  alreadyExist: {
+
+  Already_Exist: {
     success: false,
     message: "🚫 This information cannot be used. Please try another or login.",
     status: 409,
@@ -76,42 +67,12 @@ export const AuthError = {
   },
 
   /* ------------------------- 5. OTP (One-Time Password) ------------------------- */
-  otpRequired: {
-    success: false,
-    message: "🔢 OTP is Required.",
-    status: 400,
-  },
-  otpLength: {
-    success: false,
-    message: "🔢 OTP must be 6 digits.",
-    status: 400,
-  },
-  otpInvalid: {
-    success: false,
-    message: "🚫 OTP must contain only digits.",
-    status: 400,
-  },
-  otpSentFailed: {
-    success: false,
-    message: "❌ Failed to send OTP to your email. Please try again.",
-    status: 500,
-  },
 
   registrationFailed: {
     success: false,
     message:
       "🚫 Registration failed. Please check your information and try again.",
     status: 400,
-  },
-  otpExpired: {
-    success: false,
-    message: "⌛ OTP has expired. Please request a new one.",
-    status: 410,
-  },
-  otpIncorrect: {
-    success: false,
-    message: "❌ The OTP you entered is incorrect. Please check and try again.",
-    status: 401,
   },
 
   /* ------------------------- 6. Security & Authorization ------------------------- */
@@ -151,5 +112,38 @@ export const AuthError = {
     success: false,
     message: "⚙️ Something went wrong on our end. Please try again later.",
     status: 500,
+  },
+};
+
+export const Otp_Error = {
+  Otp_Required: {
+    success: false,
+    message: "🔢 OTP is Required.",
+    status: 400,
+  },
+  Otp_Length: {
+    success: false,
+    message: "🔢 OTP must be 6 digits.",
+    status: 400,
+  },
+  Otp_Invalid: {
+    success: false,
+    message: "🚫 OTP must contain only digits.",
+    status: 400,
+  },
+  Otp_Sent_Failed: {
+    success: false,
+    message: "❌ Failed to send OTP to your email. Please try again.",
+    status: 500,
+  },
+  Otp_Expired: {
+    success: false,
+    message: "⌛ OTP has expired. Please request a new one.",
+    status: 410,
+  },
+  Otp_Incorrect: {
+    success: false,
+    message: "❌ The OTP you entered is incorrect. Please check and try again.",
+    status: 401,
   },
 };

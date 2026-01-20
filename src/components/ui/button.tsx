@@ -57,10 +57,12 @@ export const Button: React.FC<ButtonProps> = ({
       "bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-500/30",
     danger:
       "bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-500/30",
+    cancel:
+      "absolute cursor-pointer hover:bg-rose-100 dark:hover:bg-rose-500 rounded-full transition",
   };
 
   const sizes: Record<string, string> = {
-    sm: "px-4 py-2 text-xs",
+    sm: "px-2 py-2 text-xs",
     md: "px-6 py-3 text-sm",
     lg: "px-10 py-4 text-lg",
   };

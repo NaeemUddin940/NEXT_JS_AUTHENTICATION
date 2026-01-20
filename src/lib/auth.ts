@@ -35,6 +35,7 @@ export const auth = betterAuth({
     },
   },
 
+
   // ৫. ইউজার ফিল্ডস: ইউজারের সাথে বাড়তি কিছু তথ্য সেভ করার জন্য।
   user: {
     additionalFields: {
@@ -42,6 +43,10 @@ export const auth = betterAuth({
         type: "string",
         defaultValue: "user", // নতুন কেউ সাইন-আপ করলে সে ডিফল্টভাবে 'user' রোল পাবে।
         input: false, // ইউজার নিজে থেকে সাইন-আপ করার সময় তার রোল পরিবর্তন করতে পারবে না (সিকিউরিটির জন্য)।
+      },
+      image: {
+        type: "string",
+        defaultValue: null,
       },
     },
   },
